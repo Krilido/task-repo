@@ -10,4 +10,21 @@ use Illuminate\Routing\Controller as BaseController;
 class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
+
+    public function get_error_from_validation($error_data)
+    {
+        $temp_array = [];
+        $error_length = count($error_data);
+        
+        for ($i=0; $i <$error_length ; $i++) { 
+            $field = $this->get_string_between($error_data[$i],"The "," field");
+            if ( preg_match('/\s/',$field) ){
+                $field = str_replace(' ', '_', $field);
+            }
+            $arrayName = array('message' => $error_data[$i],
+                                'field' =>  $field);
+            array_push($temp_array,$arrayName);
+        } 
+        return $temp_array;
+    }
 }

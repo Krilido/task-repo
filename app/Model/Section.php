@@ -10,6 +10,11 @@ class Section extends Model
     const ACTIVE = 1;
     const NON_ACTIVE = 0;
 
+    public function tasks()
+    {
+        return $this->hasMany('App\Model\Task','id','section_id');
+    }
+
     public static function browseByUser($request)
     {
         $data = [];
@@ -19,17 +24,11 @@ class Section extends Model
         if (isset($request->filters)) {
             $like = $request->filters;
             if (isset($like['status'])) {
-                $sections = $sections->where(function ($query) use ($like) {
-                    $query->orWhere('status', $like['status']);
-                });
+                $sections = $sections->where('status', $like['status']);
             } elseif (isset($like['name'])) {
-                $sections = $sections->where(function ($query) use ($like) {
-                    $query->orWhere('name',$like['name']);
-                });
+                $sections = $sections->where('name',$like['name']);
             } elseif (isset($like['desc'])) {
-                $sections = $sections->where(function ($query) use ($like) {
-                    $query->orWhere('description',$like['desc']);
-                });
+                $sections = $sections->where('description',$like['desc']);
             }
         }
 

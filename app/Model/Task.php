@@ -8,6 +8,8 @@ class Task extends Model
 {
     const ACTIVE = 1;
     const NON_ACTIVE = 0;
+    const TODO = 0;
+    const DONE = 1;
 
     public static function browseByUser($request)
     {
@@ -18,35 +20,19 @@ class Task extends Model
         if (isset($request->filters)) {
             $like = $request->filters;
             if (isset($like['status'])) {
-                $tasks = $tasks->where(function ($query) use ($like) {
-                    $query->orWhere('status', $like['status']);
-                });
+                $tasks = $tasks->where('status', $like['status']);
             } elseif (isset($like['name'])) {
-                $tasks = $tasks->where(function ($query) use ($like) {
-                    $query->orWhere('name',$like['name']);
-                });
-            } elseif (isset($like['desc'])) {
-                $tasks = $tasks->where(function ($query) use ($like) {
-                    $query->orWhere('description',$like['desc']);
-                });
+                $tasks = $tasks->where('name',$like['name']);
+            } elseif (isset($like['progress'])) {
+                $tasks = $tasks->where('progress',$like['progress']);
             }
         }
 
         if (isset($request->search)) {
-            $like = $request->filters;
-            if (isset($like['status'])) {
-                $tasks = $tasks->where(function ($query) use ($like) {
-                    $query->orWhere('status', 'like', '%' . $like['status'] . '%');
-                });
-            } elseif (isset($like['name'])) {
-                $tasks = $tasks->where(function ($query) use ($like) {
-                    $query->orWhere('name', 'like', '%' . $like['name'] . '%');
-                });
-            } elseif (isset($like['desc'])) {
-                $tasks = $tasks->where(function ($query) use ($like) {
-                    $query->orWhere('description', 'like', '%' . $like['desc'] . '%');
-                });
-            }
+            $like = $request->search;
+            $tasks = $tasks->where(function ($query) use ($like) {
+                $query->orWhere('name', 'like', '%' . $like['name'] . '%');
+            }); 
         }
 
         if (!$request->has('page')) {
