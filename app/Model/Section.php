@@ -12,7 +12,7 @@ class Section extends Model
 
     public function tasks()
     {
-        return $this->hasMany('App\Model\Task','id','section_id');
+        return $this->hasMany('App\Model\Task','section_id','id');
     }
 
     public static function browseByUser($request)
