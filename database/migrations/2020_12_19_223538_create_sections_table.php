@@ -17,6 +17,7 @@ class CreateSectionsTable extends Migration
             $table->id();
             $table->string('name')->nullable();
             $table->integer('status');
+            $table->text('description')->nullable()->default('text');
             $table->string('created_by')->nullable()->default('admin');
             $table->string('updated_by')->nullable()->default('admin');
             $table->timestamps();

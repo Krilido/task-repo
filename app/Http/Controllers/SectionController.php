@@ -119,6 +119,7 @@ class SectionController extends Controller
         $data = Section::with(['task' => function ($var)
         {
             $var->status = Task::ACTIVE;
+            $var->orderBy('created_at', 'desc');
         }])->where('id',$id)->where('status',Section::ACTIVE)->first();
         if (empty($data)) {
             return response()->json([
@@ -160,7 +161,51 @@ class SectionController extends Controller
      */
     public function update(Request $request)
     {
-        
+        try {
+            $rules = [
+                'name' => 'required|max:200',
+                'id' => 'required'
+            ];
+            $validator = Validator::make($request->all(), $rules);
+            if (!$validator->passes()) {
+                $data = $this->get_error_from_validation($validator->errors()->all());
+                return response()->json(['code' => 400,'error' => $data, 'message' => "error in validation"], 200);
+            }
+    
+            $sec = Section::find($request->id);
+            if (empty($sec)) {
+                return response()->json([
+                    'code' => 404,
+                    'error' => ['data not found'],
+                    'message' => 'Failed update data.'
+                ], 200);
+            }
+            $sec->name      = $request->name;
+            if (isset($request->description) && !empty($request->description)) {
+                $sec->description = $request->description;
+            }
+            $sec->save();
+            if ($sec) {
+                 return response()->json([
+                        'code' => 200,
+                        'data' => $sec,
+                        'message' => 'Successfully update data.'
+                    ], 200);
+            } else{
+                return response()->json([
+                    'code' => 400,
+                    'error' => ['some error acquired, please contact admin'],
+                    'message' => 'Failed update data.'
+                ], 200);
+            }
+        } catch (\Throwable $th) {
+            Log::info($th);
+            return response()->json([
+                'code' => 400,
+                'error' => ['some error acquired, please contact admin'],
+                'message' => 'Failed update data.'
+            ], 200);
+        }
     }
 
     /**

@@ -19,7 +19,7 @@ class Section extends Model
     {
         $data = [];
         
-        $sections = Section::where('status', Section::ACTIVE)->where('user_id', $user_id);
+        $sections = Section::where('status', Section::ACTIVE);
 
         if (isset($request->filters)) {
             $like = $request->filters;

@@ -11,11 +11,21 @@ class Task extends Model
     const TODO = 0;
     const DONE = 1;
 
+    public function section()
+    {
+        return $this->belongsTo('App\Model\Section','section_id','id');
+    }
+
+
     public static function browseByUser($request)
     {
         $data = [];
         
-        $tasks = Task::where('status', Task::ACTIVE)->where('user_id', $user_id);
+        if (isset($request->section_id)) {
+            $tasks = Task::where('status', Task::ACTIVE)->where('section_id',$request->section_id);
+        } else{
+            $tasks = Task::where('status', Task::ACTIVE);
+        }
 
         if (isset($request->filters)) {
             $like = $request->filters;
@@ -35,12 +45,14 @@ class Task extends Model
             }); 
         }
 
-        if (!$request->has('page')) {
-            $request->merge(['page' => 1]);
-        }
-        if (!$request->has('limit')) {
-            $request->merge(['limit' => 10]);
-        }
+        $tasks = $tasks->orderBy('created_at', 'desc');
+
+        // if (!$request->has('page')) {
+        //     $request->merge(['page' => 1]);
+        // }
+        // if (!$request->has('limit')) {
+        //     $request->merge(['limit' => 10]);
+        // }
 
         $page = $request->input('page');
         $limit = $request->input('limit');
@@ -59,6 +71,7 @@ class Task extends Model
             $data['tasks'][$i]->status       = $data['tasks'][$i]->status == Task::ACTIVE ? "Active" : "Nonactive";
             $temp_created_at                    = Carbon::createFromFormat('Y-m-d H:i:s', $data['tasks'][$i]->created_at);
             $data['tasks'][$i]->created_at   = $now->diffForHumans($temp_created_at);
+            $data['tasks'][$i]->progress       = $data['tasks'][$i]->status == Task::TODO ? "To Do" : "Done";
         }
         $total_page = ceil($total / $limit);
         $data['total'] = $total;
