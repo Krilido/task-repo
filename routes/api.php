@@ -25,3 +25,11 @@ Route::prefix('section')->group(function () {
     Route::post('update', 'SectionController@update');
     Route::get('', 'SectionController@index');
 });
+
+Route::prefix('task')->group(function () {
+    Route::post('create', 'TaskController@store');
+    Route::get('{id}', 'TaskController@show');
+    Route::get('withsection/{id}', 'TaskController@showWithSection');
+    Route::post('update', 'TaskController@update');
+    Route::get('', 'TaskController@index');
+});

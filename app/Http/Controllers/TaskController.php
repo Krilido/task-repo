@@ -8,6 +8,7 @@ use App\Model\Task;
 use Log;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use Validator;
 
 class TaskController extends Controller
 {
@@ -96,7 +97,7 @@ class TaskController extends Controller
                     'message' => 'Failed save data.'
                 ], 200);
             }
-        } catch (\Throwable $th) {
+        } catch (\Throwable $th) {dd($th);
             Log::info($th);
             return response()->json([
                 'code' => 400,
@@ -142,7 +143,7 @@ class TaskController extends Controller
         } else{
             $data->status       = $data->status == Task::ACTIVE ? "Active" : "Nonactive";
             $temp_created_at    = Carbon::createFromFormat('Y-m-d H:i:s', $data->created_at);
-            $data->created_at   = $Carbon::now()->diffForHumans($temp_created_at);
+            $data->time_create   = Carbon::now()->diffForHumans($temp_created_at);
             $data->progress     = $data->status == Task::TODO ? "To Do" : "Done";
             return response()->json([
                 'code' => 200,
