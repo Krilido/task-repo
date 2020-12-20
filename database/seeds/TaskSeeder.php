@@ -3,6 +3,7 @@
 use Illuminate\Database\Seeder;
 use Faker\Factory as Faker;
 use App\Model\Task;
+use Carbon\Carbon;
 
 class TaskSeeder extends Seeder
 {
@@ -23,7 +24,8 @@ class TaskSeeder extends Seeder
                 'section_id' => $faker->numberBetween(1,50),
                 'status' => Task::ACTIVE,
                 'progress' => $faker->numberBetween(0,1),
-    			'description' => "some Description"
+                'description' => "some Description",
+                'created_at' => Carbon::now()
     		]);
  
     	}

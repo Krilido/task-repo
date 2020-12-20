@@ -124,7 +124,7 @@ class SectionController extends Controller
     {
         $data = Section::with(['tasks' => function ($var)
         {
-            $var->status = Task::ACTIVE;
+            
             $var->orderBy('created_at', 'desc');
         }])->where('id',$id)->where('status',Section::ACTIVE)->first();
         if (empty($data)) {

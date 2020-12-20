@@ -3,6 +3,7 @@
 use Illuminate\Database\Seeder;
 use Faker\Factory as Faker;
 use App\Model\Section;
+use Carbon\Carbon;
 
 class SectionSeeder extends Seeder
 {
@@ -21,7 +22,8 @@ class SectionSeeder extends Seeder
     		DB::table('sections')->insert([
     			'name' => $faker->name,
     			'status' => Section::ACTIVE,
-    			'description' => "some Description"
+                'description' => "some Description",
+                'created_at' => Carbon::now()
     		]);
  
     	}
