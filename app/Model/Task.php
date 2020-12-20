@@ -47,12 +47,12 @@ class Task extends Model
 
         $tasks = $tasks->orderBy('created_at', 'desc');
 
-        // if (!$request->has('page')) {
-        //     $request->merge(['page' => 1]);
-        // }
-        // if (!$request->has('limit')) {
-        //     $request->merge(['limit' => 10]);
-        // }
+        if (!$request->has('page')) {
+            $request->merge(['page' => 1]);
+        }
+        if (!$request->has('limit')) {
+            $request->merge(['limit' => 10]);
+        }
 
         $page = $request->input('page');
         $limit = $request->input('limit');
@@ -70,7 +70,7 @@ class Task extends Model
         for ($i = 0; $i < $l_Tasks; $i++) {
             $data['tasks'][$i]->status       = $data['tasks'][$i]->status == Task::ACTIVE ? "Active" : "Nonactive";
             $temp_created_at                    = Carbon::createFromFormat('Y-m-d H:i:s', $data['tasks'][$i]->created_at);
-            $data['tasks'][$i]->created_at   = $now->diffForHumans($temp_created_at);
+            $data['tasks'][$i]->time_create   = $now->diffForHumans($temp_created_at);
             $data['tasks'][$i]->progress       = $data['tasks'][$i]->status == Task::TODO ? "To Do" : "Done";
         }
         $total_page = ceil($total / $limit);

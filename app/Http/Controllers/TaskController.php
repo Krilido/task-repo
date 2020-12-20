@@ -54,23 +54,34 @@ class TaskController extends Controller
     {
         try {
             $rules = [
-                'name' => 'required|max:200'
+                'name' => 'required|max:200',
+                'section_id' => 'required',
             ];
             $validator = Validator::make($request->all(), $rules);
             if (!$validator->passes()) {
                 $data = $this->get_error_from_validation($validator->errors()->all());
                 return response()->json(['code' => 400,'error' => $data, 'message' => "error in validation"], 200);
             }
+
+            $data_sec = Section::where('id',$request->section_id)->where('status',Section::ACTIVE)->first();
+            if (empty($data_sec)) {
+                return response()->json([
+                    'code' => 404,
+                    'error' => ['Section with this id does not exist'],
+                    'message' => 'Failed save data.'
+                ], 200);
+            }
     
             $task = new Task;
-            $task->name      = $request->name;
+            $task->name         = $request->name;
+            $task->section_id   = $request->section_id;
             if (isset($request->description)) {
                 $task->description  = $request->description;
             } else{
                 $task->description  = null;
             }
-            $task->status    = Task::ACTIVE;
-            $task->progress  = Task::TODO;
+            $task->status       = Task::ACTIVE;
+            $task->progress     = Task::TODO;
             $task->save();
             if ($task) {
                  return response()->json([

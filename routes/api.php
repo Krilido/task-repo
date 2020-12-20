@@ -17,3 +17,11 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+Route::prefix('section')->group(function () {
+    Route::post('create', 'SectionController@store');
+    Route::get('{id}', 'SectionController@show');
+    Route::get('withtask/{id}', 'SectionController@showWithTask');
+    Route::post('update', 'SectionController@update');
+    Route::get('', 'SectionController@index');
+});

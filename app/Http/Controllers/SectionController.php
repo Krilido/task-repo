@@ -8,6 +8,7 @@ use App\Model\Task;
 use Log;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use Validator;
 
 class SectionController extends Controller
 {
@@ -25,7 +26,7 @@ class SectionController extends Controller
                     'data' => $data,
                     'message' => 'Successfully get data.'
                 ], 200);
-        } catch (\Throwable $th) {
+        } catch (\Throwable $th) {dd($th);
             return response()->json([
                 'code' => 500,
                 'error' => ['some error acquired, please contact admin'],
@@ -65,6 +66,11 @@ class SectionController extends Controller
     
             $sec = new Section;
             $sec->name      = $request->name;
+            if (isset($request->description)) {
+                $sec->description  = $request->description;
+            } else{
+                $sec->description  = null;
+            }
             $sec->status    = Section::ACTIVE;
             $sec->save();
             if ($sec) {
@@ -116,7 +122,7 @@ class SectionController extends Controller
 
     public function showWithTask($id)
     {
-        $data = Section::with(['task' => function ($var)
+        $data = Section::with(['tasks' => function ($var)
         {
             $var->status = Task::ACTIVE;
             $var->orderBy('created_at', 'desc');

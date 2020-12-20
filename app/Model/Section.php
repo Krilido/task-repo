@@ -33,7 +33,7 @@ class Section extends Model
         }
 
         if (isset($request->search)) {
-            $like = $request->filters;
+            $like = $request->search;
             if (isset($like['status'])) {
                 $sections = $sections->where(function ($query) use ($like) {
                     $query->orWhere('status', 'like', '%' . $like['status'] . '%');
@@ -72,7 +72,7 @@ class Section extends Model
         for ($i = 0; $i < $l_sections; $i++) {
             $data['sections'][$i]->status       = $data['sections'][$i]->status == Section::ACTIVE ? "Active" : "Nonactive";
             $temp_created_at                    = Carbon::createFromFormat('Y-m-d H:i:s', $data['sections'][$i]->created_at);
-            $data['sections'][$i]->created_at   = $now->diffForHumans($temp_created_at);
+            $data['sections'][$i]->time_create   = $now->diffForHumans($temp_created_at);
         }
         $total_page = ceil($total / $limit);
         $data['total'] = $total;
